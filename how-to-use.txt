@@ -1,0 +1,15 @@
+python -m venv venv
+//这里注意，一定删了venv新建一个，如果直接用clone下来的venv，会因为源python路径不同跑不起来。
+venv\Scripts\activate
+pip install flask
+pip install flask_cors
+pip install flask_mysqldb
+pip install flask_bcrypt
+pip install flask_jwt_extended
+cd backend
+flask run
+
+
+cd frontend
+npm install
+npm start
