@@ -52,6 +52,13 @@ class WaterQuality(db.Model):
         }
 
 
+class Farmer(db.Model):
+    __tablename__ = 'farmers'
+    id = db.Column(db.Integer, primary_key=True)
+    farmer_name = db.Column(db.String(100), nullable=False)
+    section_name = db.Column(db.String(100), nullable=False)
+
+
 class MarineFarmDevice(db.Model):
     __tablename__ = 'marine_farm_device'
 
@@ -108,6 +115,47 @@ def get_locations():
 
     except Exception as e:
         return jsonify({"code": 500, "message": str(e)})
+
+
+@app.route('/api/farmer_locations', methods=['GET'])
+def get_farmer_locations():
+    try:
+        farmer_name = request.args.get('farmer_name', '').strip()
+        if not farmer_name:
+            return jsonify({"code": 400, "message": "缺少 farmer_name 参数"})
+
+        # 查询该养殖户负责的所有 section_name
+        section_names = db.session.query(Farmer.section_name).filter_by(farmer_name=farmer_name).distinct().all()
+        section_names = [s.section_name.strip() for s in section_names]
+
+        if not section_names:
+            return jsonify({"code": 200, "data": []})
+
+        # 查询唯一的 section_name, province, basin 组合
+        locations = db.session.query(
+            WaterQuality.section_name,
+            WaterQuality.province,
+            WaterQuality.basin
+        ).filter(WaterQuality.section_name.in_(section_names)).distinct().all()
+
+        # 构建返回列表
+        locations_list = [
+            {
+                "section_name": loc.section_name.strip(),
+                "province": loc.province.strip(),
+                "basin": loc.basin.strip()
+            }
+            for loc in locations
+        ]
+
+        return Response(
+            json.dumps({"code": 200, "data": locations_list}, ensure_ascii=False),
+            content_type='application/json; charset=utf-8'
+        )
+
+    except Exception as e:
+        return jsonify({"code": 500, "message": str(e)})
+
 
 
 # 获取指
