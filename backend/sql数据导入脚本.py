@@ -1,95 +1,3 @@
-# import csv
-# import json
-# from bs4 import BeautifulSoup
-#
-# # 原始 JSON 数据
-# with open("D:/桌面/软件工程/f7ee1bebe4a9404083f70b4961b92c86 (1)/软件工程大作业数据/水质数据/2020-05/2020-05-08.json", "r", encoding="utf-8") as f:
-#     data = json.load(f)
-#
-# # 获取表头，去除HTML标签
-# thead = [BeautifulSoup(cell, "html.parser").get_text().replace("\n", "").replace(" ", " ").strip() for cell in data["thead"]]
-#
-# # 获取数据行 tbody
-# tbody = []
-# for row in data["tbody"]:
-#     clean_row = []
-#     for cell in row:
-#         # 去除HTML标签，只保留可读文字
-#         text = BeautifulSoup(cell, "html.parser").get_text().strip()
-#         clean_row.append(text)
-#     tbody.append(clean_row)
-#
-# # 写入CSV文件
-# with open("D:/桌面/软件工程/f7ee1bebe4a9404083f70b4961b92c86 (1)/软件工程大作业数据/水质数据/2020-05/output.csv", "w", newline="", encoding="utf-8-sig") as f:
-#     writer = csv.writer(f)
-#     writer.writerow(thead)
-#     writer.writerows(tbody)
-#
-# print("✅ 数据已成功写入 output.csv 文件")
-#df = pd.read_csv("D:/桌面/软件工程/f7ee1bebe4a9404083f70b4961b92c86 (1)/软件工程大作业数据/水质数据/water_quality_by_name/安徽省/淮河流域/白洋淀渡口/2021-04/白洋淀渡口.csv", encoding='utf-8')
-
-
-
-#
-# import pandas as pd
-# import pymysql
-# import numpy as np
-#
-# # 读取CSV（注意这里使用 UTF-8 编码，如果打不开尝试改为 'gbk'）
-# df = pd.read_csv("D:/桌面/water_quality_by_name/安徽省/巢湖流域/湖滨/2021-04/湖滨.csv", encoding='utf-8')
-# # 打印前10行原始数据（检查是否有隐藏字符或格式不一致）
-# print(df["监测时间"].head(10).to_list())
-#
-# # 假设所有数据年份为 2021
-# df["监测时间"] = "2025-" + df["监测时间"].str.strip()  # 例如 "04-01 04:00" → "2021-04-01 04:00"
-# df["监测时间"] = pd.to_datetime(df["监测时间"], format="%Y-%m-%d %H:%M", errors="coerce")
-# # 检查转换失败的行（如果有无效时间格式会显示数量）
-# print("时间转换失败的行数：", df["监测时间"].isna().sum())
-#
-#
-# for col in ["叶绿素α(mg/L)", "藻密度(cells/L)"]:
-#     df[col] = df[col].apply(lambda x: None if x == "*" else x)
-#
-# # 数据库连接配置
-# connection = pymysql.connect(
-#     host="localhost",
-#     user="root",
-#     password="root",  # 默认XAMPP密码为空，若设置过请修改
-#     database="ocean_farm",
-#     charset="utf8mb4"
-# )
-#
-# cursor = connection.cursor()
-#
-# # 插入数据
-# for _, row in df.iterrows():
-#     sql = """
-#         INSERT INTO water_quality (
-#             province, basin, section_name, monitor_time,
-#             water_quality_level, temperature, pH, dissolved_oxygen,
-#             conductivity, turbidity, permanganate_index,
-#             ammonia_nitrogen, total_phosphorus, total_nitrogen,
-#             chlorophyll_a, algae_density, station_status
-#         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-#     """
-#     values = (
-#         row["省份"], row["流域"], row["断面名称"], row["监测时间"],
-#         row["水质类别"], row["水温(℃)"], row["pH(无量纲)"], row["溶解氧(mg/L)"],
-#         row["电导率(μS/cm)"], row["浊度(NTU)"], row["高锰酸盐指数(mg/L)"],
-#         row["氨氮(mg/L)"], row["总磷(mg/L)"], row["总氮(mg/L)"],
-#         row["叶绿素α(mg/L)"], row["藻密度(cells/L)"], row["站点情况"]
-#     )
-#     cursor.execute(sql, values)
-#
-# # 提交并关闭
-# connection.commit()
-# cursor.close()
-# connection.close()
-#
-# print("数据已成功导入 MySQL 数据库！")
-#
-
-
 import os
 import pandas as pd
 import pymysql
@@ -181,7 +89,7 @@ if __name__ == "__main__":
     DB_CONFIG = {
         "host": "localhost",
         "user": "root",
-        "password": "root",
+        "password": "",
         "database": "ocean_farm",
         "charset": "utf8mb4"
     }

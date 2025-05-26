@@ -1,9 +1,0 @@
-python -m venv venv
-venv\Scripts\activate
-
-cd backend
-flask run
-
-
-cd frontend
-npm start
